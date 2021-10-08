@@ -1,6 +1,12 @@
 package com.weatherhub.app.utils;
 
-import com.sendgrid.*;
+import com.sendgrid.Response;
+import com.sendgrid.Content;
+import com.sendgrid.Email;
+import com.sendgrid.Mail;
+import com.sendgrid.SendGrid;
+import com.sendgrid.Request;
+import com.sendgrid.Method;
 
 import java.io.IOException;
 
