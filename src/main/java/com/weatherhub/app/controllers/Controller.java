@@ -8,6 +8,8 @@ import com.weatherhub.app.services.NewServiceRequestService;
 import com.weatherhub.app.services.PlaceService;
 import com.weatherhub.app.services.UserService;
 import com.weatherhub.app.utils.Encoder;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@Tag(name="Основной контроллер", description="Действия над контентом")
 public class Controller {
 
     @Autowired
@@ -25,6 +28,10 @@ public class Controller {
     @Autowired
     private PlaceService placeService;
 
+    @Operation(
+            summary = "Сохранение местоположений",
+            description = "Позволяет сохранить в базу список местоположений пользователя"
+    )
     @PostMapping(value = "/user/add_places")
     public ResponseEntity<?> add_place(@RequestBody AddPlacesRequest addPlacesRequest) {
         User user;
@@ -50,16 +57,20 @@ public class Controller {
 
     //Получение местоположений по пользователю
     //Проверка по токену!!
+    @Operation(
+            summary = "Получение местоположений",
+            description = "Позволяет получить из базы список местоположений пользователя"
+    )
     @GetMapping(value = "/user/get_places")
-    public ResponseEntity<?> getPlacesByUser(@RequestBody ShowPlacesRequest showPlacesRequest) {
+    public ResponseEntity<?> getPlacesByUser(@RequestBody GetPlacesRequest getPlacesRequest) {
         List<Place> places;
         User user;
-        if (userService.findByEmail(showPlacesRequest.getEmail()) == null)
+        if (userService.findByEmail(getPlacesRequest.getEmail()) == null)
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
-        String userToken = userService.findByEmail(showPlacesRequest.getEmail()).getToken();
-        if (Encoder.compare(showPlacesRequest.getToken(), userToken))
-            user = userService.findByEmail(showPlacesRequest.getEmail());
+        String userToken = userService.findByEmail(getPlacesRequest.getEmail()).getToken();
+        if (Encoder.compare(getPlacesRequest.getToken(), userToken))
+            user = userService.findByEmail(getPlacesRequest.getEmail());
         else
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
@@ -73,7 +84,11 @@ public class Controller {
     }
 
     //удаление местоположения по пользователю
-    @PostMapping(value = "/users/delete_place")
+    @Operation(
+            summary = "Удаление местоположения",
+            description = "Позволяет удалить из базы местоположение пользователя"
+    )
+    @DeleteMapping(value = "/users/delete_place")
     public ResponseEntity<?> delete(@RequestBody DeletePlaceRequest deletePlaceRequest) {
 
         User user;
@@ -97,6 +112,10 @@ public class Controller {
                 : new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
     }
 
+    @Operation(
+            summary = "Получение списка пользователей",
+            description = "Позволяет получить список зарегистрированных пользователей"
+    )
     @GetMapping(value = "/users")
     public ResponseEntity<List<User>> read() {
         final List<User> users = userService.readAll();
@@ -106,6 +125,10 @@ public class Controller {
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
+    @Operation(
+            summary = "Заявка на добавление сервиса",
+            description = "Позволяет сохранить в базу заявку на добавление сервиса"
+    )
     @PostMapping(value = "/users/add_new_service_request")
     public ResponseEntity<?> addNewService(@RequestBody AddServiceRequest addServiceRequest) {
 
@@ -114,6 +137,10 @@ public class Controller {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @Operation(
+            summary = "Получение списка заявок на добавление сервисов",
+            description = "Позволяет посмотреть список заявок на добавление сервисов"
+    )
     @GetMapping(value = "/get_new_service_requests")
     public ResponseEntity<?> getNewService(@RequestBody AddServicesStatisticsRequest addServicesStatisticsRequest) {
 

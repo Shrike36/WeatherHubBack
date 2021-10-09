@@ -1,8 +1,14 @@
 package com.weatherhub.app.requests;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
+@Schema(description = "Запрос на удаление из базы местоположения пользователя")
 public class DeletePlaceRequest {
+    @Schema(description = "Адрес пользователя")
     private String email;
+    @Schema(description = "Авторизационный токен пользователя")
     private String token;
+    @Schema(description = "Местоположение пользователя")
     private String coordinate;
 
     public DeletePlaceRequest() {

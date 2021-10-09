@@ -1,7 +1,12 @@
 package com.weatherhub.app.requests;
 
+import io.swagger.v3.oas.annotations.media.Schema;
+
+@Schema(description = "запрос с новым паролем")
 public class ResetPassword {
+    @Schema(description = "Новый пароль")
     private String newPassword;
+    @Schema(description = "Код подтверждения")
     private String code;
 
     public ResetPassword() {

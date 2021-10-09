@@ -8,6 +8,8 @@ import com.weatherhub.app.requests.ResetPasswordRequest;
 import com.weatherhub.app.services.PlaceService;
 import com.weatherhub.app.services.UserService;
 import com.weatherhub.app.utils.*;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +21,7 @@ import java.util.Map;
 import java.util.Set;
 
 @RestController
+@Tag(name="Контроллер логина", description="Авторизация, регистрация, смена пароля")
 public class LoginController {
 
     @Autowired
@@ -27,6 +30,10 @@ public class LoginController {
     private ResetPasswordRequestsService resetPasswordRequestsService = new ResetPasswordRequestsService();
 
     @PostMapping(value = "/register")
+    @Operation(
+            summary = "Регистрация пользователя",
+            description = "Позволяет зарегистрировать пользователя"
+    )
     public ResponseEntity<?> register(@RequestBody RegisterRequest registerRequest) {
 
         String email = registerRequest.getEmail();
@@ -48,6 +55,10 @@ public class LoginController {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
+    @Operation(
+            summary = "Авторизация пользователя",
+            description = "Позволяет авторизировать пользователя"
+    )
     @PostMapping(value = "/auth")
     public ResponseEntity<?> auth(@RequestBody RegisterRequest authRequest) {
 
@@ -73,6 +84,10 @@ public class LoginController {
         return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
+    @Operation(
+            summary = "Запрос на смену пароля",
+            description = "Формирует заявку на смену пароля"
+    )
     @PostMapping(value = "/reset_password_request")
     public ResponseEntity<?> resetPasswordRequest(@RequestBody ResetPasswordRequest resetPasswordRequest) {
 
@@ -100,6 +115,10 @@ public class LoginController {
                 : new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
     }
 
+    @Operation(
+            summary = "Смена пароля",
+            description = "Изменяет пароль пользователя"
+    )
     @PostMapping(value = "/reset_password")
     public ResponseEntity<?> resetPassword(@RequestBody ResetPassword resetPassword) {
 
