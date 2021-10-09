@@ -1,10 +1,10 @@
 package com.weatherhub.app.controllers;
 
+import com.weatherhub.app.models.NewServiceRequest;
 import com.weatherhub.app.models.Place;
 import com.weatherhub.app.models.User;
-import com.weatherhub.app.requests.AddPlacesRequest;
-import com.weatherhub.app.requests.DeletePlaceRequest;
-import com.weatherhub.app.requests.ShowPlacesRequest;
+import com.weatherhub.app.requests.*;
+import com.weatherhub.app.services.NewServiceRequestService;
 import com.weatherhub.app.services.PlaceService;
 import com.weatherhub.app.services.UserService;
 import com.weatherhub.app.utils.Encoder;
@@ -18,6 +18,8 @@ import java.util.List;
 @RestController
 public class Controller {
 
+    @Autowired
+    private NewServiceRequestService newServiceRequestService;
     @Autowired
     private UserService userService;
     @Autowired
@@ -102,5 +104,25 @@ public class Controller {
         return users != null &&  !users.isEmpty()
                 ? new ResponseEntity<>(users, HttpStatus.OK)
                 : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    @PostMapping(value = "/users/add_new_service_request")
+    public ResponseEntity<?> addNewService(@RequestBody AddServiceRequest addServiceRequest) {
+
+        newServiceRequestService.create(new NewServiceRequest(addServiceRequest.getServiceName()));
+
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/get_new_service_requests")
+    public ResponseEntity<?> getNewService(@RequestBody AddServicesStatisticsRequest addServicesStatisticsRequest) {
+
+        String adminToken = userService.findByEmail("va123ma@gmail.com").getToken();
+        if (!Encoder.compare(addServicesStatisticsRequest.getToken(), adminToken))
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+        List<Object[]> stats = newServiceRequestService.getStats();
+
+        return new ResponseEntity<>(stats, HttpStatus.OK);
     }
 }
