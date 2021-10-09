@@ -9,7 +9,7 @@ import java.io.IOException;
 
 public class EmailSender {
     public static void sendEmail(String email, String code) throws IOException {
-        Email from = new Email("va123ma123@gmail.com");
+        Email from = new Email("dmitryd20@gmail.com");
         Email to = new Email(email); // use your own email address here
 
         String subject = "WeatherHub Password Reset Code";
