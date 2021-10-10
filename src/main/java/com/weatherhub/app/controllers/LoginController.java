@@ -34,7 +34,7 @@ public class LoginController {
             summary = "Регистрация пользователя",
             description = "Позволяет зарегистрировать пользователя"
     )
-    public ResponseEntity<?> register(@RequestBody RegisterRequest registerRequest) {
+    public ResponseEntity<String> register(@RequestBody RegisterRequest registerRequest) {
 
         String email = registerRequest.getEmail();
         String hashedPassword = Encoder.encode(registerRequest.getPassword());
@@ -60,7 +60,7 @@ public class LoginController {
             description = "Позволяет авторизировать пользователя"
     )
     @PostMapping(value = "/auth")
-    public ResponseEntity<?> auth(@RequestBody RegisterRequest authRequest) {
+    public ResponseEntity<String> auth(@RequestBody RegisterRequest authRequest) {
 
         String email = authRequest.getEmail();
         String hashedPassword = Encoder.encode(authRequest.getPassword());
@@ -120,7 +120,7 @@ public class LoginController {
             description = "Изменяет пароль пользователя"
     )
     @PostMapping(value = "/reset_password")
-    public ResponseEntity<?> resetPassword(@RequestBody ResetPassword resetPassword) {
+    public ResponseEntity<String> resetPassword(@RequestBody ResetPassword resetPassword) {
 
         if(!resetPasswordRequestsService.getRequests().containsValue(Integer.valueOf(resetPassword.getCode())))
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);

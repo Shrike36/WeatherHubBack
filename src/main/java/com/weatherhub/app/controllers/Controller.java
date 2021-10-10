@@ -62,7 +62,7 @@ public class Controller {
             description = "Позволяет получить из базы список местоположений пользователя"
     )
     @GetMapping(value = "/user/get_places")
-    public ResponseEntity<?> getPlacesByUser(@RequestBody GetPlacesRequest getPlacesRequest) {
+    public ResponseEntity<List<Place>> getPlacesByUser(@RequestBody GetPlacesRequest getPlacesRequest) {
         List<Place> places;
         User user;
         if (userService.findByEmail(getPlacesRequest.getEmail()) == null)
@@ -74,13 +74,13 @@ public class Controller {
         else
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
-        if(user == null)
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-
-        places = placeService.findByUserid(user.getId());
-        return places != null && !places.isEmpty()
-                ? new ResponseEntity<>(places, HttpStatus.OK)
-                : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        if(user != null) {
+            places = placeService.findByUserid(user.getId());
+            return places != null && !places.isEmpty()
+                    ? new ResponseEntity<>(places, HttpStatus.OK)
+                    : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     //удаление местоположения по пользователю
@@ -142,7 +142,7 @@ public class Controller {
             description = "Позволяет посмотреть список заявок на добавление сервисов"
     )
     @GetMapping(value = "/get_new_service_requests")
-    public ResponseEntity<?> getNewService(@RequestBody AddServicesStatisticsRequest addServicesStatisticsRequest) {
+    public ResponseEntity<List<Object[]>> getNewService(@RequestBody AddServicesStatisticsRequest addServicesStatisticsRequest) {
 
         String adminToken = userService.findByEmail("va123ma@gmail.com").getToken();
         if (!Encoder.compare(addServicesStatisticsRequest.getToken(), adminToken))
