@@ -74,13 +74,13 @@ public class Controller {
         else
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
-        if(user != null) {
-            places = placeService.findByUserid(user.getId());
-            return places != null && !places.isEmpty()
-                    ? new ResponseEntity<>(places, HttpStatus.OK)
-                    : new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        if(user == null)
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+        places = placeService.findByUserid(user.getId());
+        return places != null && !places.isEmpty()
+                ? new ResponseEntity<>(places, HttpStatus.OK)
+                : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     //удаление местоположения по пользователю
