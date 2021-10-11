@@ -148,6 +148,7 @@ public class Controller {
         if (!Encoder.compare(addServicesStatisticsRequest.getToken(), adminToken))
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
+
         List<Object[]> stats = newServiceRequestService.getStats();
 
         return new ResponseEntity<>(stats, HttpStatus.OK);
