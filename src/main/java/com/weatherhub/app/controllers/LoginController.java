@@ -5,6 +5,7 @@ import com.weatherhub.app.models.User;
 import com.weatherhub.app.requests.RegisterRequest;
 import com.weatherhub.app.requests.ResetPassword;
 import com.weatherhub.app.requests.ResetPasswordRequest;
+import com.weatherhub.app.responses.TokenResponse;
 import com.weatherhub.app.services.PlaceService;
 import com.weatherhub.app.services.UserService;
 import com.weatherhub.app.utils.*;
@@ -34,7 +35,7 @@ public class LoginController {
             summary = "Регистрация пользователя",
             description = "Позволяет зарегистрировать пользователя"
     )
-    public ResponseEntity<String> register(@RequestBody RegisterRequest registerRequest) {
+    public ResponseEntity<TokenResponse> register(@RequestBody RegisterRequest registerRequest) {
 
         String email = registerRequest.getEmail();
         String hashedPassword = Encoder.encode(registerRequest.getPassword());
@@ -48,7 +49,7 @@ public class LoginController {
             userService.create(user);
             User test = userService.findByEmail(email);
             return test != null
-                    ? new ResponseEntity<>(token, HttpStatus.OK)
+                    ? new ResponseEntity<>(new TokenResponse(token), HttpStatus.OK)
                     : new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
         }
         else
@@ -60,7 +61,7 @@ public class LoginController {
             description = "Позволяет авторизировать пользователя"
     )
     @PostMapping(value = "/auth")
-    public ResponseEntity<String> auth(@RequestBody RegisterRequest authRequest) {
+    public ResponseEntity<TokenResponse> auth(@RequestBody RegisterRequest authRequest) {
 
         String email = authRequest.getEmail();
         String hashedPassword = Encoder.encode(authRequest.getPassword());
@@ -77,7 +78,7 @@ public class LoginController {
         if(Encoder.compare(authRequest.getPassword(), user.getPassword())){
             user = new User(email, hashedPassword, hashedToken);
             return userService.update(user, userId)
-                    ? new ResponseEntity<>(token, HttpStatus.OK)
+                    ? new ResponseEntity<>(new TokenResponse(token), HttpStatus.OK)
                     : new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
         }
 
@@ -120,7 +121,7 @@ public class LoginController {
             description = "Изменяет пароль пользователя"
     )
     @PostMapping(value = "/reset_password")
-    public ResponseEntity<String> resetPassword(@RequestBody ResetPassword resetPassword) {
+    public ResponseEntity<TokenResponse> resetPassword(@RequestBody ResetPassword resetPassword) {
 
         if(!resetPasswordRequestsService.getRequests().containsValue(Integer.valueOf(resetPassword.getCode())))
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -151,7 +152,7 @@ public class LoginController {
         Integer userId = user.getId();
         user = new User(email, hashedPassword, hashedToken);
         return userService.update(user, userId)
-                ? new ResponseEntity<>(token, HttpStatus.OK)
+                ? new ResponseEntity<>(new TokenResponse(token), HttpStatus.OK)
                 : new ResponseEntity<>(HttpStatus.NOT_MODIFIED);
     }
 }
