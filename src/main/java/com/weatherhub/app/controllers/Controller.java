@@ -142,7 +142,7 @@ public class Controller {
             description = "Позволяет посмотреть список заявок на добавление сервисов"
     )
     @GetMapping(value = "/get_new_service_requests")
-    public ResponseEntity<List<Object[]>> getNewService(@RequestBody AddServicesStatisticsRequest addServicesStatisticsRequest) {
+    public ResponseEntity<List<Object[]>> getNewService(@RequestParam AddServicesStatisticsRequest addServicesStatisticsRequest) {
 
         String adminToken = userService.findByEmail("va123ma@gmail.com").getToken();
         if (!Encoder.compare(addServicesStatisticsRequest.getToken(), adminToken))
