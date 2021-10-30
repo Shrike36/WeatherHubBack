@@ -5,7 +5,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 @Schema(description = "запрос с новым паролем")
 public class ResetPassword {
     @Schema(description = "Новый пароль")
-    private String newPassword;
+    private String password;
     @Schema(description = "Код подтверждения")
     private String code;
 
@@ -13,11 +13,11 @@ public class ResetPassword {
     }
 
     public String getPassword() {
-        return newPassword;
+        return password;
     }
 
-    public void setNewPassword(String newPassword) {
-        this.newPassword = newPassword;
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getCode() {
