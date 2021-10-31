@@ -6,7 +6,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 public class GetPlacesRequest {
     @Schema(description = "Адрес пользователя")
     private String email;
-    @Schema(description = "Авторизационный пользователя")
+    @Schema(description = "Авторизационный токен пользователя")
     private String token;
 
     public GetPlacesRequest() {

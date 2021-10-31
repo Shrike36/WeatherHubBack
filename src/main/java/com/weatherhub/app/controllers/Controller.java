@@ -9,8 +9,10 @@ import com.weatherhub.app.services.PlaceService;
 import com.weatherhub.app.services.UserService;
 import com.weatherhub.app.utils.Encoder;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Required;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -62,7 +64,8 @@ public class Controller {
             description = "Позволяет получить из базы список местоположений пользователя"
     )
     @GetMapping(value = "/user/places")
-    public ResponseEntity<List<Place>> getPlacesByUser(@RequestParam String email, @RequestParam String token) {
+    public ResponseEntity<List<Place>> getPlacesByUser(@RequestParam @Parameter(description = "Адрес пользователя", required = true) String email,
+                                                       @RequestParam @Parameter(description = "Авторизационный токен пользователя", required = true) String token) {
         List<Place> places;
         User user;
         if (userService.findByEmail(email) == null)
@@ -88,7 +91,7 @@ public class Controller {
             summary = "Удаление местоположения",
             description = "Позволяет удалить из базы местоположение пользователя"
     )
-    @DeleteMapping(value = "/users/places")
+    @DeleteMapping(value = "/user/places")
     public ResponseEntity<?> delete(@RequestBody DeletePlaceRequest deletePlaceRequest) {
 
         User user;
@@ -116,7 +119,7 @@ public class Controller {
             summary = "Получение списка пользователей",
             description = "Позволяет получить список зарегистрированных пользователей"
     )
-    @GetMapping(value = "/users")
+    @GetMapping(value = "/user/all")
     public ResponseEntity<List<User>> read() {
         final List<User> users = userService.readAll();
 
@@ -129,7 +132,7 @@ public class Controller {
             summary = "Заявка на добавление сервиса",
             description = "Позволяет сохранить в базу заявку на добавление сервиса"
     )
-    @PostMapping(value = "/users/new_service_request")
+    @PostMapping(value = "/user/new_service_request")
     public ResponseEntity<?> addNewService(@RequestBody AddServiceRequest addServiceRequest) {
 
         newServiceRequestService.create(new NewServiceRequest(addServiceRequest.getServiceName()));
@@ -141,8 +144,8 @@ public class Controller {
             summary = "Получение списка заявок на добавление сервисов",
             description = "Позволяет посмотреть список заявок на добавление сервисов"
     )
-    @GetMapping(value = "/new_service_request")
-    public ResponseEntity<List<Object[]>> getNewService(@RequestParam String token) {
+    @GetMapping(value = "/user/new_service_request")
+    public ResponseEntity<List<Object[]>> getNewService(@RequestParam @Parameter(description = "Авторизационный токен администратора") String token) {
 
         String adminToken = userService.findByEmail("va123ma@gmail.com").getToken();
         if (!Encoder.compare(token, adminToken))
