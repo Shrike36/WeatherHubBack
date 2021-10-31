@@ -62,7 +62,7 @@ public class Controller {
             description = "Позволяет получить из базы список местоположений пользователя"
     )
     @GetMapping(value = "/user/get_places")
-    public ResponseEntity<List<Place>> getPlacesByUser(@RequestBody GetPlacesRequest getPlacesRequest) {
+    public ResponseEntity<List<Place>> getPlacesByUser(@RequestParam GetPlacesRequest getPlacesRequest) {
         List<Place> places;
         User user;
         if (userService.findByEmail(getPlacesRequest.getEmail()) == null)
