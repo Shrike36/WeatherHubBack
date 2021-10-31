@@ -32,7 +32,7 @@ public class Controller {
             summary = "Сохранение местоположений",
             description = "Позволяет сохранить в базу список местоположений пользователя"
     )
-    @PostMapping(value = "/user/add_places")
+    @PostMapping(value = "/user/places")
     public ResponseEntity<?> add_place(@RequestBody AddPlacesRequest addPlacesRequest) {
         User user;
         if (userService.findByEmail(addPlacesRequest.getEmail()) == null)
@@ -61,16 +61,16 @@ public class Controller {
             summary = "Получение местоположений",
             description = "Позволяет получить из базы список местоположений пользователя"
     )
-    @GetMapping(value = "/user/get_places")
-    public ResponseEntity<List<Place>> getPlacesByUser(@RequestParam GetPlacesRequest getPlacesRequest) {
+    @GetMapping(value = "/user/places")
+    public ResponseEntity<List<Place>> getPlacesByUser(@RequestParam String email, @RequestParam String token) {
         List<Place> places;
         User user;
-        if (userService.findByEmail(getPlacesRequest.getEmail()) == null)
+        if (userService.findByEmail(email) == null)
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
-        String userToken = userService.findByEmail(getPlacesRequest.getEmail()).getToken();
-        if (Encoder.compare(getPlacesRequest.getToken(), userToken))
-            user = userService.findByEmail(getPlacesRequest.getEmail());
+        String userToken = userService.findByEmail(email).getToken();
+        if (Encoder.compare(token, userToken))
+            user = userService.findByEmail(email);
         else
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
@@ -88,7 +88,7 @@ public class Controller {
             summary = "Удаление местоположения",
             description = "Позволяет удалить из базы местоположение пользователя"
     )
-    @DeleteMapping(value = "/users/delete_place")
+    @DeleteMapping(value = "/users/places")
     public ResponseEntity<?> delete(@RequestBody DeletePlaceRequest deletePlaceRequest) {
 
         User user;
@@ -129,7 +129,7 @@ public class Controller {
             summary = "Заявка на добавление сервиса",
             description = "Позволяет сохранить в базу заявку на добавление сервиса"
     )
-    @PostMapping(value = "/users/add_new_service_request")
+    @PostMapping(value = "/users/new_service_request")
     public ResponseEntity<?> addNewService(@RequestBody AddServiceRequest addServiceRequest) {
 
         newServiceRequestService.create(new NewServiceRequest(addServiceRequest.getServiceName()));
@@ -141,11 +141,11 @@ public class Controller {
             summary = "Получение списка заявок на добавление сервисов",
             description = "Позволяет посмотреть список заявок на добавление сервисов"
     )
-    @GetMapping(value = "/get_new_service_requests")
-    public ResponseEntity<List<Object[]>> getNewService(@RequestParam AddServicesStatisticsRequest addServicesStatisticsRequest) {
+    @GetMapping(value = "/new_service_request")
+    public ResponseEntity<List<Object[]>> getNewService(@RequestParam String token) {
 
         String adminToken = userService.findByEmail("va123ma@gmail.com").getToken();
-        if (!Encoder.compare(addServicesStatisticsRequest.getToken(), adminToken))
+        if (!Encoder.compare(token, adminToken))
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
 
